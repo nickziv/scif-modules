@@ -1,57 +1,3 @@
-
-%% bare_conf.tex
-%% V1.3
-%% 2007/01/11
-%% by Michael Shell
-%% See:
-%% http://www.michaelshell.org/
-%% for current contact information.
-%%
-%% This is a skeleton file demonstrating the use of IEEEtran.cls
-%% (requires IEEEtran.cls version 1.7 or later) with an IEEE conference paper.
-%%
-%% Support sites:
-%% http://www.michaelshell.org/tex/ieeetran/
-%% http://www.ctan.org/tex-archive/macros/latex/contrib/IEEEtran/
-%% and
-%% http://www.ieee.org/
-
-%%*************************************************************************
-%% Legal Notice:
-%% This code is offered as-is without any warranty either expressed or
-%% implied; without even the implied warranty of MERCHANTABILITY or
-%% FITNESS FOR A PARTICULAR PURPOSE! 
-%% User assumes all risk.
-%% In no event shall IEEE or any contributor to this code be liable for
-%% any damages or losses, including, but not limited to, incidental,
-%% consequential, or any other damages, resulting from the use or misuse
-%% of any information contained here.
-%%
-%% All comments are the opinions of their respective authors and are not
-%% necessarily endorsed by the IEEE.
-%%
-%% This work is distributed under the LaTeX Project Public License (LPPL)
-%% ( http://www.latex-project.org/ ) version 1.3, and may be freely used,
-%% distributed and modified. A copy of the LPPL, version 1.3, is included
-%% in the base LaTeX documentation of all distributions of LaTeX released
-%% 2003/12/01 or later.
-%% Retain all contribution notices and credits.
-%% ** Modified files should be clearly indicated as such, including  **
-%% ** renaming them and changing author support contact information. **
-%%
-%% File list of work: IEEEtran.cls, IEEEtran_HOWTO.pdf, bare_adv.tex,
-%%                    bare_conf.tex, bare_jrnl.tex, bare_jrnl_compsoc.tex
-%%*************************************************************************
-
-% *** Authors should verify (and, if needed, correct) their LaTeX system  ***
-% *** with the testflow diagnostic prior to trusting their LaTeX platform ***
-% *** with production work. IEEE's font choices can trigger bugs that do  ***
-% *** not appear when using other class files.                            ***
-% The testflow support page is at:
-% http://www.michaelshell.org/tex/testflow/
-
-
-
 % Note that the a4paper option is mainly intended so that authors in
 % countries using A4 can easily print to A4 and see how their papers will
 % look in print - the typesetting of the document will not typically be
@@ -69,10 +15,6 @@
 % If IEEEtran.cls has not been installed into the LaTeX system files,
 % manually specify the path to it like:
 % \documentclass[conference]{../sty/IEEEtran}
-
-
-
-
 
 % Some very useful LaTeX packages include:
 % (uncomment the ones you want to load)
@@ -352,24 +294,17 @@
 %
 % paper title
 % can use linebreaks \\ within to get better formatting as desired
-\title{Bare Demo of IEEEtran.cls for IEEECS Conferences}
+\title{Evaluating the Support of MTC Applications\\on Intel Xeon Phi Many-Core Accelerators}
 
 
 % author names and affiliations
 % use a multiple column layout for up to two different
 % affiliations
 
-\author{\IEEEauthorblockN{Authors Name/s per 1st Affiliation (Author)}
-\IEEEauthorblockA{line 1 (of Affiliation): dept. name of organization\\
-line 2: name of organization, acronyms acceptable\\
-line 3: City, Country\\
-line 4: Email: name@xyz.com}
-\and
-\IEEEauthorblockN{Authors Name/s per 2nd Affiliation (Author)}
-\IEEEauthorblockA{line 1 (of Affiliation): dept. name of organization\\
-line 2: name of organization, acronyms acceptable\\
-line 3: City, Country\\
-line 4: Email: name@xyz.com}
+\author{\IEEEauthorblockN{Karl Stough,
+Serapheim Dimitropoulos,
+Poornima Nookala}
+\IEEEauthorblockA{Illinois Institute of Technology}
 }
 
 % conference papers do not typically use \thanks and this command
@@ -408,12 +343,12 @@ line 4: Email: name@xyz.com}
 
 
 \begin{abstract}
-The abstract goes here. DO NOT USE SPECIAL CHARACTERS, SYMBOLS, OR MATH IN YOUR TITLE OR ABSTRACT.
+As Many-Task Computing (MTC) is becoming commonplace on clusters, grids, and supercomputers, research that aims to take advantage of the new advances in hardware for MTC workloads becomes more relevant. A good example is the design of frameworks like GeMTC that incorporate general purpose GPU hardware to improve the concurrency of executing tasks. For this project we will attempt to support MTC workloads on the Intel Xeon Phi. Our plan is to develop two frameworks that will achieve that goal. One will be based on OpenMP and the other one on Intel’s Symmetric Communication Interface (SCIF) provided for Many-Integrated Core (MIC) accelerators like the Xeon Phi. Both frameworks will provide an identical interface to the one found in the GeMTC’s API aiming to work as drop-in replacements. Our end-goal is to present how programming many-core computing processors can be made easier and more productive using OpenMP or SCIF in integration with parallel languages like Swift/T.
 
 \end{abstract}
 
 \begin{IEEEkeywords}
-component; formatting; style; styling;
+Many-task computing; Accelerators; Intel Xeon Phi; Coprocessor; Programming models; Execution models.
 
 \end{IEEEkeywords}
 
@@ -430,15 +365,51 @@ component; formatting; style; styling;
 
 
 
-\section{Introduction}
-% no \IEEEPARstart
-This demo file is intended to serve as a ``starter file''
-for IEEE conference papers produced under \LaTeX\ using
-IEEEtran.cls version 1.7 and later.
+\section{Background Information}
+GeMTC is a CUDA based GPU framework which allows Many-Task Computing workloads to run efficiently on NVIDIA GPUs. NVIDIA is only one manufacturer of hardware accelerators; several other brands/manufacturers include AMD GPUs and the Intel Xeon Phi. This project aims to provide support for the Intel Xeon Phi via the use of OpenMP and SCIF. The Intel Xeon Phi is a hardware coprocessor from Intel. It is a PCI device with roughly 60 cores and over 240 hardware threads. Enabling support for the Swift parallel scripting language on the Xeon Phi, through our frameworks, would contribute a great deal towards making programming many-core computing processors and accelerators easier and efficient while providing a high-level abstraction to application users.
 
-All manuscripts must be in English. These guidelines include complete descriptions of the fonts, spacing, and related information for producing your proceedings manuscripts. Please follow them and if you have any questions, direct them to the production editor in charge of your proceedings at Conference Publishing Services (CPS): Phone +1 (714) 821-8380 or Fax +1 (714) 761-1784.
-% You must have at least 2 lines in the paragraph with the drop letter
-% (should never be an issue)
+\section{Problem Statement}
+GPUs have different and restrictive programming model, but provide at least an order of magnitude better throughput for applications painstakingly coded to that model. To program GPUs, typically there is a need to learn another programming language such as CUDA (NVIDIA) or OpenCL (AMD). As a result, existing vendors must spend extra time and effort to modify or rewrite parts of their codebase to take advantage of the new capabilities provided by General Purpose GPUs (GPGPUs). Besides that, barely rewriting an application just to offload computations to a GPU rarely works well. Because of the architecture of most GPUs out there, applications must be tailored from the ground up to follow the rules of the restrictive programming model of GPUs, otherwise they may suffer from severe performance penalties. Because of that, interested vendors cannot afford to go through the effort involved. Finally, while GPUs are great for massively parallel applications with thread-switching that comes almost at no cost, their performance can take a large hit when executing programs with complex logic (like complicated branching and looping for example). Therefore it may be unsuitable for certain applications of MTC.
+
+The Intel Xeon Phi follows an alternative programming model that, although may not provide the same level of parallelism, provides more flexibility and therefore can be more suitable for certain application of MTC that GPUs are not suited for. This was the primary motivation for us to work on this project.
+
+\section{Related Work}
+The GeMTC framework and its API are limited exclusively to NVIDIA GPUs since it is developed in CUDA. Even though we will be working with OpenMP on Xeon Phi, some ideas from the CUDA version of GeMTC will still be applicable. For example using a buffer in the host’s memory that will flush tasks periodically to the device seems like a useful concept to reduce communication overhead. The actual implementation of course will have to be made from scratch since there are differences between the architecture of the Xeon Phi and the GPUs that GeMTC was initially designed for. See the GeMTC’14 paper for more information on the initial implementation.
+
+Moreover, there have been some preliminary results for MTC workloads on the Xeon Phi (See GCASR’13 paper). In order for these results to be acquired at that time a similar framework to GeMTC was made that used SCIF. The issue with that implementation is that it does not provide the whole feature set of GeMTC and therefore is not suitable for MTC use. Nevertheless, that initial implementation gave signs that using SCIF for direct communication between the host and the accelerator via the PCI Express bus minimized certain overheads over a similar OpenMP implementation.
+
+\section{Proposed Solution}
+The Intel Xeon Phi contains a simplified version of x86 cores, which are programmed using traditional programming languages(C, OpenMP, Pthreads) or new emerging languages (e.g. OpenCL and OpenACC). Ideally, vendors will just have to add some directives and recompile their existing software for the Xeon Phi in order to offload computation to the accelerator. The idea of having x86 cores on the accelerator implies that one can execute parallel code on it that is written for ‘normal’ computers. That also means that the Xeon Phi can handle more logically complicated programs that need to be highly parallel. Finally, under certain conditions it may be beneficial to have the whole application running natively, directly on the card.
+
+Our proposed solution to the problem stated earlier is to implement two frameworks for the Xeon Phi that provide a similar interface to the GeMTC framework’s API. This way we will not only enable the support of many MTC applications of GeMTC to the Xeon Phi, but we will also be able to evaluate how well our frameworks comparing them to data from GPU applications.
+
+The outline of our contributions for this project is the following:
+
+TODO Write numberings here
+
+\section{Evaluation}
+The team will evaluate the performance of the OpenMP and SCIF implementations of GeMTC with that of the original CUDA framework. It is expected that the three versions will have different performance characteristics due to the differences in both hardware and software architecture. The evaluation will take place in a single node machine and then in multiple nodes using Swift/T. In order to make sure that our results will be helpful for real world use, we will start by testing the performance with Synthetic Sleep Workloads and from there move on to real-world MTC workloads launched by Swift/T.
+
+The team plans to evaluate:
+
+TODO write bulletpoints
+
+Additionally, the team may perform a cursory investigation into the expected performance per watt between a GPU and Xeon Phi in a real-world supercomputing setting.
+
+\section{Timeline with weekly goals}
+
+STUB
+
+
+\section{Deliverables}
+
+STUB
+
+\section{Conclusion}
+Making a framework for a device with a unique architecture like the Xeon Phi is not a common task to undertake for most software developers. Therefore, we are excited to learn about the internals of the device and see how we can get the most out of it. Nevertheless, we think the most valuable experience that we are going to get will come from considering the different tradeoffs and making decisions on a design that fits the field of Many-Task Computing.
+
+As for the goals of our project, we would like to be realistic but also set our goals high. While it is important to implement a framework that works correctly, we think that stopping there would make our project only partially successful. We want to evaluate our success in terms of the impact of our work. Thus, we would consider our project a success if it is good enough to be presented as an alternative option to the already existing systems out there. This includes doing enough testing to verify the correctness and  the usability of our framework, while doing enough benchmarking at the same time to provide an accurate picture of where it stands when compared with existing systems in terms of performance.
+
 
 \subsection{Subsection Heading Here}
 Subsection text here.
