@@ -381,18 +381,28 @@ Moreover, there have been some preliminary results for MTC workloads on the Xeon
 \section{Proposed Solution}
 The Intel Xeon Phi contains a simplified version of x86 cores, which are programmed using traditional programming languages(C, OpenMP, Pthreads) or new emerging languages (e.g. OpenCL and OpenACC). Ideally, vendors will just have to add some directives and recompile their existing software for the Xeon Phi in order to offload computation to the accelerator. The idea of having x86 cores on the accelerator implies that one can execute parallel code on it that is written for ‘normal’ computers. That also means that the Xeon Phi can handle more logically complicated programs that need to be highly parallel. Finally, under certain conditions it may be beneficial to have the whole application running natively, directly on the card.
 
-Our proposed solution to the problem stated earlier is to implement two frameworks for the Xeon Phi that provide a similar interface to the GeMTC framework’s API. This way we will not only enable the support of many MTC applications of GeMTC to the Xeon Phi, but we will also be able to evaluate how well our frameworks comparing them to data from GPU applications.
+Our proposed solution to the problem stated earlier is to implement two frameworks for the Xeon Phi that provide a similar interface to the GeMTC framework’s API. This way we will not only enable the support of many MTC applications of GeMTC to the Xeon Phi, but we will also be able to evaluate how well our frameworks comparing them to data from GPU applications.\\
 
-The outline of our contributions for this project is the following:
 
-TODO Write numberings here
+The outline of our contributions for this project is the following:\\
+
+
+\begin{itemize}
+  \item Design, analyze and implement two frameworks, one in OpenMP and one in SCIF, to provide functionality identical to GeMTC and to allow MTC workloads to run on Intel Xeon Phi accelerators. The team shall attempt to duplicate GeMTC’s API for easy integration with Swift.
+  \item Evaluate the performance of running concurrent homogenous and heterogeneous tasks across the Phi’s 60-core architecture (240 hardware threads) and compare it with existing the performance of existing systems.
+  \item Evaluate and integrate our frameworks with Swift/T to leverage the advantages of this high-level scripting language making it a productive language for programming parallel systems.
+\end{itemize}
 
 \section{Evaluation}
-The team will evaluate the performance of the OpenMP and SCIF implementations of GeMTC with that of the original CUDA framework. It is expected that the three versions will have different performance characteristics due to the differences in both hardware and software architecture. The evaluation will take place in a single node machine and then in multiple nodes using Swift/T. In order to make sure that our results will be helpful for real world use, we will start by testing the performance with Synthetic Sleep Workloads and from there move on to real-world MTC workloads launched by Swift/T.
-
+The team will evaluate the performance of the OpenMP and SCIF implementations of GeMTC with that of the original CUDA framework. It is expected that the three versions will have different performance characteristics due to the differences in both hardware and software architecture. The evaluation will take place in a single node machine and then in multiple nodes using Swift/T. In order to make sure that our results will be helpful for real world use, we will start by testing the performance with Synthetic Sleep Workloads and from there move on to real-world MTC workloads launched by Swift/T.\\
+\\*
 The team plans to evaluate:
-
-TODO write bulletpoints
+\\
+\begin{enumerate}
+  \item How efficiency is affected between the different GeMTC frameworks depending on the different task types.
+  \item How does each system behaves in terms of scalability as the number of concurrent threads increases.
+  \item Model the throughput of each system, both as a function of task duration as well as thread concurrency
+\end{enumerate}
 
 Additionally, the team may perform a cursory investigation into the expected performance per watt between a GPU and Xeon Phi in a real-world supercomputing setting.
 
@@ -403,24 +413,18 @@ STUB
 
 \section{Deliverables}
 
-STUB
+The deliverables for this project are the following:\\
+
+\begin{enumerate}
+  \item The OpenMP and SCIF implementations of the GeMTC API.
+  \item A formal report/research paper that will present our results and findings of our experiments. The same paper shall contain the reasoning behind some of the implementation details from our frameworks.
+  \item The accompanied slides of the presentation that will take place at the end of the semester.
+\end{enumerate}
 
 \section{Conclusion}
 Making a framework for a device with a unique architecture like the Xeon Phi is not a common task to undertake for most software developers. Therefore, we are excited to learn about the internals of the device and see how we can get the most out of it. Nevertheless, we think the most valuable experience that we are going to get will come from considering the different tradeoffs and making decisions on a design that fits the field of Many-Task Computing.
 
 As for the goals of our project, we would like to be realistic but also set our goals high. While it is important to implement a framework that works correctly, we think that stopping there would make our project only partially successful. We want to evaluate our success in terms of the impact of our work. Thus, we would consider our project a success if it is good enough to be presented as an alternative option to the already existing systems out there. This includes doing enough testing to verify the correctness and  the usability of our framework, while doing enough benchmarking at the same time to provide an accurate picture of where it stands when compared with existing systems in terms of performance.
-
-
-\subsection{Subsection Heading Here}
-Subsection text here.
-
-
-\subsubsection{Subsubsection Heading Here}
-Subsubsection text here.
-
-\section{Type style and Fonts}
-Wherever Times is specified, Times Roman or Times New Roman may be used. If neither is available on your system, please use the font closest in appearance to Times. Avoid using bit-mapped fonts if possible. True-Type 1 or Open Type fonts are preferred. Please embed symbol fonts, as well, for math, etc.
-
 
 % An example of a floating figure using the graphicx package.
 % Note that \label must occur AFTER (or within) \caption.
@@ -503,22 +507,6 @@ Wherever Times is specified, Times Roman or Times New Roman may be used. If neit
 % exclusively. Note that, LaTeX2e, unlike IEEE journals/conferences, places
 % footnotes above bottom floats. This can be corrected via the \fnbelowfloat
 % command of the stfloats package.
-
-
-
-\section{Conclusion}
-The conclusion goes here. this is more of the conclusion
-
-% conference papers do not normally have an appendix
-
-
-% use section* for acknowledgement
-\section*{Acknowledgment}
-
-
-The authors would like to thank...
-more thanks here
-
 
 % trigger a \newpage just before the given reference
 % number - used to balance the columns on the last page
