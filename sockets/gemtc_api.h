@@ -1,5 +1,11 @@
-#ifndef _GEMTC_API_H_
-#define _GEMTC_API_H_
+#ifndef __GEMTC_API_H
+#define __GEMTC_API_H
+
+#include <pthread.h>
+
+pthread_mutex_t enqueue_lock;
+pthread_mutex_t dequeue_lock;
+pthread_mutex_t memcpy_lock;
 
 void gemtc_setup(int queue_size, int workers);
 void gemtc_cleanup();

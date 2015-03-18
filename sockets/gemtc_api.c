@@ -4,12 +4,24 @@
 void gemtc_setup(int queue_size, int workers)
 {
 	printf("gemtc_setup: Queue Size = %d, Workers = %d\n", queue_size, workers);
+
+	/* initialize locks */
+	pthread_mutex_init(&enqueue_lock, NULL);
+	pthread_mutex_init(&dequeue_lock, NULL);
+	pthread_mutex_init(&memcpy_lock, NULL);
+
 	return;
 }
 
 void gemtc_cleanup()
 {
 	printf("gemtc_cleanup\n");
+
+	/* cleanup locks */
+	pthread_mutex_destroy(&enqueue_lock);
+	pthread_mutex_destroy(&dequeue_lock);
+	pthread_mutex_destroy(&memcpy_lock);
+
 	return;
 }
 
