@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "gemtc_api.h"
+#include "mtc_queue.h"
 
 void gemtc_setup(int queue_size, int workers)
 {
@@ -9,6 +10,11 @@ void gemtc_setup(int queue_size, int workers)
 	pthread_mutex_init(&enqueue_lock, NULL);
 	pthread_mutex_init(&dequeue_lock, NULL);
 	pthread_mutex_init(&memcpy_lock, NULL);
+
+	/* create queue */
+	struct queue *q = create_queue(queue_size);
+	/* delete queue */
+	dispose_queue(q);
 
 	return;
 }
@@ -37,7 +43,3 @@ void gemtc_poll(int *id, void **params)
 					*id, (params) ? "Exist" : "is NULL" );
 	return;
 }
-
-void gemtc_memcpy_host2dev() { /* STUB */ }
-
-void gemtc_memcpy_dev2host() { /* STUB */ }

@@ -13,13 +13,11 @@ void gemtc_cleanup();
 void gemtc_push(int type, int threads, int id, void *params);
 void gemtc_poll(int *id, void **params);
 
-void gemtc_memcpy_host2dev();
-void gemtc_memcpy_dev2host();
+void gemtc_memcpy_host2dev(void *host, void *device, int size);
+void gemtc_memcpy_dev2host(void *device, void *host, int size);
 
-/* Possibly Unneeded */
-void gemtc_malloc();
-/* Possibly Unneeded */
-void gemtc_free();
+void *gemtc_malloc(unsigned nbytes);
+void gemtc_free(void *loc);
 
 
-#endif
+#endif /* __GEMTC_API_H */
