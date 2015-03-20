@@ -1,16 +1,6 @@
 #include "mtc_queue.h"
 #include <stdlib.h>
 
-static int is_empty(struct queue *q)
-{
-	return (q->rear + 1) % q->capacity == q->front;
-}
-
-static int is_full(struct queue *q)
-{
-	return (q->rear + 2) % q->capacity == q->front;
-}
-
 struct queue *create_queue(int size)
 {
 	struct queue *q = (struct queue *) malloc(sizeof(struct queue));
@@ -19,6 +9,9 @@ struct queue *create_queue(int size)
 	q->capacity = size;
 	q->front = 1;
 	q->rear = 0;
+	pthread_mutex_init(&q->lock, NULL);
+	sem_init(&q->task_sem, 0, 0);
+	sem_init(&q->spaces_sem, 0, size);
 
 	return q;
 }
@@ -26,50 +19,36 @@ struct queue *create_queue(int size)
 void dispose_queue(struct queue *q)
 {
 	free(q->tasks);
+	pthread_mutex_destroy(&q->lock);
+	sem_destroy(&q->task_sem);
+	sem_destroy(&q->spaces_sem);
 	free(q);
 }
 
 void enqueue(struct task_desc *task, struct queue *q)
 {
-	/* Use Polling for now (may have to change in the future) */
-	while (is_full(q)); /* I'm weary of this */
+	sem_wait(&q->spaces_sem);
+	pthread_mutex_lock(&q->lock);
 
+		int index = (q->rear + 1) % (q->capacity);
+		q->tasks[index] = task;
+		q->rear = index;
 
-	/* WARNING: This will fail if mod capacity is less or equal to 0 */
-	int index = (q->rear + 1) % (q->capacity);
-	q->tasks[index] = task;
-	q->rear = index;
-
+	pthread_mutex_unlock(&q->lock);
+	sem_post(&q->task_sem);
 }
 
-struct task_desc *front(struct queue *q)
+struct task_desc *dequeue(struct queue *q)
 {
-	/* Use Polling for now (may have to change in the future) */
-	while (is_empty(q));
+	sem_wait(&q->task_sem);
+	pthread_mutex_lock(&q->lock);
 
-	struct task_desc *task = (struct task_desc *) malloc(sizeof(struct task_desc));
-	*task = *(q->tasks[q->front]); /* WARNING: THAT MAY BE NOT WHAT I EXPECT! */
+		struct task_desc *task = (struct task_desc *) malloc(sizeof(struct task_desc));
+		*task = *(q->tasks[q->front]); /* WARNING: THIS MAY NOT BE WHAT I ASSUME IT IS */
+		q->front = (q->front + 1) % (q->capacity);
 
-	return task; /* Again very weary of this */
-}
-
-void dequeue(struct queue *q)
-{
-	/* Use Polling for now (may have to change in the future) */
-	while (is_empty(q));
-
-	q->front = (q->front + 1) % (q->capacity);
-}
-
-struct task_desc *try_front_dequeue(struct queue *q)
-{
-	if (is_empty(q)) {
-		return NULL;
-	}
-
-	struct task_desc *task = (struct task_desc *) malloc(sizeof(struct task_desc));
-	*task = *(q->tasks[q->front]);
-	q->front = (q->front + 1) % (q->capacity);
+	pthread_mutex_unlock(&q->lock);
+	sem_post(&q->spaces_sem);
 
 	return task;
 }

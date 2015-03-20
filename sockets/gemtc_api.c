@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "gemtc_api.h"
 #include "mtc_queue.h"
 
@@ -11,10 +12,7 @@ void gemtc_setup(int queue_size, int workers)
 {
 	printf("gemtc_setup: Queue Size = %d, Workers = %d\n", queue_size, workers);
 
-	/* initialize locks */
-	pthread_mutex_init(&enqueue_lock, NULL);
-	pthread_mutex_init(&dequeue_lock, NULL);
-	pthread_mutex_init(&memcpy_lock, NULL);
+	assert(queue_size > 0);
 
 	/* allocate queues */
 	incoming_work = create_queue(queue_size);
@@ -24,11 +22,6 @@ void gemtc_setup(int queue_size, int workers)
 void gemtc_cleanup()
 {
 	printf("gemtc_cleanup\n");
-
-	/* cleanup locks */
-	pthread_mutex_destroy(&enqueue_lock);
-	pthread_mutex_destroy(&dequeue_lock);
-	pthread_mutex_destroy(&memcpy_lock);
 
 	/* cleanup queues */
 	dispose_queue(incoming_work);
@@ -46,9 +39,7 @@ void gemtc_push(int type, int threads, int id, void *params)
 	task->num_threads = threads;
 	task->params = params;
 
-	pthread_mutex_lock(&enqueue_lock);
 	enqueue(task, incoming_work);
-	pthread_mutex_unlock(&enqueue_lock);
 }
 
 void gemtc_poll(int *id, void **params)
@@ -58,19 +49,11 @@ void gemtc_poll(int *id, void **params)
 
 	struct task_desc *task;
 
-	/* try to dequeue from the front */
-	pthread_mutex_lock(&dequeue_lock);
-	task = try_front_dequeue(completed_result);
-	pthread_mutex_unlock(&dequeue_lock);
+	task = dequeue(completed_result);
 
-	/* if nothing was returned set error values and return */
-	if (!task) {
-		*id = -1;
-		*params = NULL;
-		return;
-	}
+	assert(task != NULL);
 	
-	/* else pass the pointers with the results */
+	/* pass the pointers with the results */
 	*id = task->task_id;
 	*params = task->params;
 
@@ -88,7 +71,7 @@ void gemtc_free(void *loc) {
 }
 
 /* For the memcpy functions use Xeon Phi's API */
-void gemtc_memcpy_host2dev(void *host, void *device, int size)
+void gemtc_memcpy_host2dev(void *host, void *device, size_t size)
 {
 	assert(host != 0);
 	assert(device != 0);
@@ -96,7 +79,7 @@ void gemtc_memcpy_host2dev(void *host, void *device, int size)
 	memcpy(host, device, size);
 }
 
-void gemtc_memcpy_dev2host(void *device, void *host, int size)
+void gemtc_memcpy_dev2host(void *device, void *host, size_t size)
 {
 	assert(device != 0);
 	assert(host != 0);

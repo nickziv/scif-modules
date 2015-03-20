@@ -1,1 +1,2 @@
 - Automate Valgrind
+- Error checking mallocs and semaphores
