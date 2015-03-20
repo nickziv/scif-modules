@@ -75,3 +75,14 @@ void gemtc_poll(int *id, void **params)
 	/* cleanup task */
 	free(task);
 }
+
+void *gemtc_malloc(unsigned int nbytes)
+{
+	return malloc(nbytes);
+}
+
+void gemtc_free(void *loc) {
+	return free(loc);
+}
+
+/* For the memcpy functions use Xeon Phi's API */
