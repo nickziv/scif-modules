@@ -3,10 +3,6 @@
 
 #include <pthread.h>
 
-pthread_mutex_t enqueue_lock;
-pthread_mutex_t dequeue_lock;
-pthread_mutex_t memcpy_lock;
-
 void gemtc_setup(int queue_size, int workers);
 void gemtc_cleanup();
 
