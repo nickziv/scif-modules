@@ -1,31 +1,46 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "gemtc_api.h"
 #include "mtc_queue.h"
+#include "master_proc.h"
 
 #include <assert.h>
 
-struct queue *incoming_work, *completed_result;
+struct mproc_state *mps;
 
 void gemtc_setup(int queue_size, int workers)
 {
 	printf("gemtc_setup: Queue Size = %d, Workers = %d\n", queue_size, workers);
 
 	assert(queue_size > 0);
+	assert(workers > 0);
 
-	/* allocate queues */
-	incoming_work = create_queue(queue_size);
-	completed_result = create_queue(queue_size);
+	int *kill_master = (int *) malloc(sizeof(int));
+	*kill_master = 0;
+
+	mps = (struct mproc_state *) malloc(sizeof(struct mproc_state));
+	mps->incoming = create_queue(queue_size);
+	mps->results = create_queue(queue_size);
+	mps->kill_master = kill_master;
+	mps->workers = workers;
+	mps->worker_threads =  (pthread_t *) malloc(sizeof(pthread_t) * workers);
+
+	/* TODO: Start the threads! */
 }
 
 void gemtc_cleanup()
 {
 	printf("gemtc_cleanup\n");
 
-	/* cleanup queues */
-	dispose_queue(incoming_work);
-	dispose_queue(completed_result);
+	*(mps->kill_master) = 1;
+	dispose_queue(mps->incoming);
+	dispose_queue(mps->results);
+	/* TODO: pthread join */
+	free(mps->worker_threads);
+	free(mps->kill_master);
+	free(mps);
 }
 
 void gemtc_push(int type, int threads, int id, void *params)
@@ -39,7 +54,7 @@ void gemtc_push(int type, int threads, int id, void *params)
 	task->num_threads = threads;
 	task->params = params;
 
-	enqueue(task, incoming_work);
+	enqueue(task, mps->incoming);
 }
 
 void gemtc_poll(int *id, void **params)
@@ -49,7 +64,7 @@ void gemtc_poll(int *id, void **params)
 
 	struct task_desc *task;
 
-	task = dequeue(completed_result);
+	task = dequeue(mps->results);
 
 	assert(task != NULL);
 	

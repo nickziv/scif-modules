@@ -6,6 +6,9 @@
 struct mproc_state {
 	struct queue *incoming;
 	struct queue *results;
+	pthread_t *worker_threads;
+	int *kill_master;
+	int workers;
 };
 
 struct task *execute_task(struct task *task);
