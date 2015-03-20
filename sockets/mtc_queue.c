@@ -1,6 +1,16 @@
 #include "mtc_queue.h"
 #include <stdlib.h>
 
+static int is_empty(struct queue *q)
+{
+	return (q->rear + 1) % q->capacity == q->front;
+}
+
+static int is_full(struct queue *q)
+{
+	return (q->rear + 2) % q->capacity == q->front;
+}
+
 struct queue *create_queue(int size)
 {
 	struct queue *q = (struct queue *) malloc(sizeof(struct queue));
