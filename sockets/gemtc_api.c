@@ -3,6 +3,8 @@
 #include "gemtc_api.h"
 #include "mtc_queue.h"
 
+#include <assert.h>
+
 struct queue *incoming_work, *completed_result;
 
 void gemtc_setup(int queue_size, int workers)
@@ -86,3 +88,18 @@ void gemtc_free(void *loc) {
 }
 
 /* For the memcpy functions use Xeon Phi's API */
+void gemtc_memcpy_host2dev(void *host, void *device, int size)
+{
+	assert(host != 0);
+	assert(device != 0);
+
+	memcpy(host, device, size);
+}
+
+void gemtc_memcpy_dev2host(void *device, void *host, int size)
+{
+	assert(device != 0);
+	assert(host != 0);
+
+	memcpy(device, host, size);
+}
