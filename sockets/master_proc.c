@@ -17,8 +17,9 @@ struct task_desc *execute_task(struct task_desc *task)
 	return task;
 }
 
-void *worker_handler(struct mproc_state *mps)
+void *worker_handler(void *data)
 {
+  struct mproc_state *mps = (struct mproc_state *) data;
 	struct task_desc *task;
 
 	while(!(*(mps->kill_master))) {

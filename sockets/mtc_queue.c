@@ -7,7 +7,7 @@ struct queue *create_queue(int size)
 
 	q->tasks = (struct task_desc **) malloc(sizeof(struct task_desc) * size);
 	q->capacity = size;
-	q->front = 1;
+	q->front = 1; /* WAIT WHY NOT 0? */
 	q->rear = 0;
 	pthread_mutex_init(&q->lock, NULL);
 	sem_init(&q->task_sem, 0, 0);
@@ -30,7 +30,7 @@ void enqueue(struct task_desc *task, struct queue *q)
 	sem_wait(&q->spaces_sem);
 	pthread_mutex_lock(&q->lock);
 
-		int index = (q->rear + 1) % (q->capacity);
+		int index = (q->rear + 1) % (q->capacity); /* Could make all these one line */
 		q->tasks[index] = task;
 		q->rear = index;
 
@@ -45,7 +45,7 @@ struct task_desc *dequeue(struct queue *q)
 
 		struct task_desc *task = (struct task_desc *) malloc(sizeof(struct task_desc));
 		*task = *(q->tasks[q->front]); /* WARNING: THIS MAY NOT BE WHAT I ASSUME IT IS */
-		q->front = (q->front + 1) % (q->capacity);
+		q->front = (q->front + 1) % (q->capacity); /* Could make all these one line */
 
 	pthread_mutex_unlock(&q->lock);
 	sem_post(&q->spaces_sem);

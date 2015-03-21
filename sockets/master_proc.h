@@ -12,6 +12,6 @@ struct mproc_state {
 };
 
 struct task_desc *execute_task(struct task_desc *task);
-void *worker_handler(struct mproc_state *mps);
+void *worker_handler(void *data);
 
 #endif /*__MASTER_PROC_H */

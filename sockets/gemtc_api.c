@@ -27,7 +27,9 @@ void gemtc_setup(int queue_size, int workers)
 	mps->workers = workers;
 	mps->worker_threads =  (pthread_t *) malloc(sizeof(pthread_t) * workers);
 
-	/* TODO: Start the threads! */
+	int t;
+	for (t = 0; t < workers; t++)
+		pthread_create(&mps->worker_threads[t], NULL, worker_handler, (void *)mps);
 }
 
 void gemtc_cleanup()
@@ -35,9 +37,17 @@ void gemtc_cleanup()
 	printf("gemtc_cleanup\n");
 
 	*(mps->kill_master) = 1;
+
+	int t;
+	for (t = 0; t < mps->workers; t++)
+		pthread_cancel(mps->worker_threads[t]);
+
+	for (t = 0; t < mps->workers; t++)
+		pthread_join(mps->worker_threads[t], NULL);
+
 	dispose_queue(mps->incoming);
 	dispose_queue(mps->results);
-	/* TODO: pthread join */
+
 	free(mps->worker_threads);
 	free(mps->kill_master);
 	free(mps);

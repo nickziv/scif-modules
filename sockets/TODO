@@ -1,2 +1,3 @@
 - Automate Valgrind
 - Error checking mallocs and semaphores
+- give spinlocks a try instead of mutex
