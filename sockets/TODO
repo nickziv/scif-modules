@@ -1,3 +1,6 @@
 - Automate Valgrind
 - Error checking mallocs and semaphores
 - give spinlocks a try instead of mutex
+- blog post on thread_cancel
+- valgrind all tests
+- try clang and its tools
