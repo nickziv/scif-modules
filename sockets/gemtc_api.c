@@ -25,7 +25,7 @@ void gemtc_setup(int queue_size, int workers)
 	mps->results = create_queue(queue_size);
 	mps->kill_master = kill_master;
 	mps->workers = workers;
-	mps->worker_threads =  (pthread_t *) malloc(sizeof(pthread_t) * workers);
+	mps->worker_threads = (pthread_t *) malloc(sizeof(pthread_t) * workers);
 
 	int t;
 	for (t = 0; t < workers; t++)
@@ -92,7 +92,7 @@ void *gemtc_malloc(unsigned int nbytes)
 }
 
 void gemtc_free(void *loc) {
-	return free(loc);
+	free(loc);
 }
 
 /* For the memcpy functions use Xeon Phi's API */
